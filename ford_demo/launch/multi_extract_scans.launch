@@ -1,0 +1,14 @@
+<!-- -*- mode: XML -*- -->
+
+<launch>
+  <arg name="vehid" default="" />
+  <arg name="logid" default="" />
+  <arg name="logname" default="2017-08-04-V$(arg vehid)-Log$(arg logid)" />
+  <arg name="savedir" default="$(find ford_demo)/data/original/vehicles/V$(arg vehid)/$(arg logname)" />
+
+  <node pkg="ford_demo" type="extract_lidar_scans" name="extract_lidar_scans" args="$(arg savedir)" required="true" />
+  
+  <node pkg="ford_demo" type="play_fordav_bag.sh" name="play_fordav_bag" output="screen" args="$(arg savedir).bag" required="true" />
+
+</launch>
+
