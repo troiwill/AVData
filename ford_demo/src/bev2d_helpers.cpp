@@ -24,8 +24,8 @@ void bev2d::createBEVimage(const PointCloud<PointXYZI>& kCloud, const vector<int
         bev_idx = (y_idx * kPixWidth) + x_idx;
         if (useIntensity)
         {
-	    uint8_t prevInten = bevImg[bev_idx];
-	    uint8_t newInten = kPt.intensity > prevInten ? kPt.intensity : prevInten;
+        uint8_t prevInten = bevImg[bev_idx];
+        uint8_t newInten = kPt.intensity > prevInten ? kPt.intensity : prevInten;
             bevImg[bev_idx] = std::min(static_cast<uint8_t>(255), newInten);
         }
         else
@@ -51,7 +51,6 @@ void bev2d::filterPointsXY(const PointCloud<PointXYZI>::Ptr& kCloud, const Vecto
 
     // Filter along the y-axis and place the indices in the output vector.
     IndicesPtr xptr(new vector<int>(x_indices));
-    // for (const int& xval : x_indices) xptr->push_back(xval);
     ptfilter.setIndices(xptr);
     ptfilter.setFilterFieldName("y");
     ptfilter.setFilterLimits(kMinPt.y(), kMaxPt.y());

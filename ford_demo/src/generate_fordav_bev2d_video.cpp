@@ -85,23 +85,18 @@ void createFordAvBevImages(queue<string>& scanQueue, const boostfs::path& kScanD
         }
         scanline = scanQueue.front();
         scanQueue.pop();
-	cout << "Progress: " << setw(10) << setprecision(3) << (++scansDone * 100.0f / nScansToDo)
-	    << "%\r" << flush;
+        cout << "Progress: " << setw(10) << setprecision(3) << (++scansDone * 100.0f / nScansToDo)
+            << "%\r" << flush;
         mtx.unlock();
 
         // Extract the scan information from the line.
         ScanInfo info;
         extractQuaternionComps(scanline, info);
-        Matrix4d rot4d = convertGTPoseToRotMat(info);
 
         // Read the scan binary from disk.
         PointCloud<PointXYZI>::Ptr cloud(new PointCloud<PointXYZI>);
         string scanpath((kScanDir / info.scanName).string());
         readXYZIBin(scanpath, *cloud);
-
-        // Transform the input cloud with the rotation matrix.
-        // pcl::PointCloud<pcl::PointXYZI> tfcloud;
-        // pcl::transformPointCloud(cloud, tfcloud, rot4d);
 
         // Use a filter to remove points within a certain range.
         Vector2d min2d{-kHalfScanLenX, -kHalfScanLenY};
@@ -109,13 +104,8 @@ void createFordAvBevImages(queue<string>& scanQueue, const boostfs::path& kScanD
         vector<int> filteredPoints;
         filterPointsXY(cloud, min2d, max2d, filteredPoints);
 
-        // Compute the center XY of the point cloud.
-        //PointXYZI minPt, maxPt;
-	//getMinMax3D(*cloud, minPt, maxPt);
-        //Vector2d cloudCenter{(maxPt.x + minPt.x) / 2, (maxPt.y + minPt.y) / 2};
-        Vector2d cloudCenter{0.0,0.0};
-
         // Create a BEV image from the point cloud.
+        Vector2d cloudCenter{0.0,0.0};
         vector<uint8_t> scanBev(kPixHeight * kPixWidth, 0);
         createBEVimage(*cloud, filteredPoints, cloudCenter, kScanLenX, kScanLenY, kPixHeight,
             kPixWidth, kBevRes, useIntensity, scanBev);
@@ -215,4 +205,3 @@ int main(int argc, char** argv)
 
     exit(EXIT_SUCCESS);
 }
-
