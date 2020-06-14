@@ -33,3 +33,10 @@
 
 # Sublime
 *.sublime*
+
+# VS Code
+.vscode
+
+# Tmp directory
+tmp
+
